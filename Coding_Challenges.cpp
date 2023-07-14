@@ -41,3 +41,22 @@ int main() {
 
 // 2. Reversing an Integer:
 
+#include <iostream>
+using namespace std;
+
+int main() {
+    int number = 12345;
+    int reversed_number = 0;
+
+    while (number != 0) {
+        reversed_number = reversed_number * 10 + number % 10;
+        number = number / 10;
+    }
+
+    cout << reversed_number;
+    return 0;
+}
+
+//----------------------------------------------------------------------------------------------------------------------------------------------
+
+// 3. Reversing an Integer:

@@ -22,3 +22,26 @@ int main() {
     }
     return 0;
 }
+
+/-----------------------------------------------------------------------------------
+
+#include <iostream>
+#include <algorithm>
+#include <cctype>
+
+bool is_palindrome(std::string s) {
+    s.erase(std::remove_if(s.begin(), s.end(), [](char c) {
+        return !std::isalnum(c);
+    }), s.end());
+    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+    std::string reversed(s.rbegin(), s.rend());
+    return s == reversed;
+}
+
+int main() {
+    std::string str = "A man, a plan, a canal: Panama";
+    std::cout << (is_palindrome(str) ? "True" : "False") << std::endl;  
+    return 0;
+}
+
+// Output: True

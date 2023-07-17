@@ -1,6 +1,7 @@
-//C++ using OpenGL and GLUT
+// C++ using OpenGL and GLUT
 
 #include <GL/glut.h>
+#include <iostream>
 
 // Define tesseract vertices
 GLfloat vertices[17][5] = {
@@ -32,46 +33,68 @@ int edges[32][2] = {
     {7, 15}
 };
 
-void drawTesseract()
+// Function to draw the tesseract edges
+void drawEdges()
 {
-    // Project vertices onto 3D space (select the first three components)
-    GLfloat projectedVertices[17][3];
-    for (int i = 0; i < 17; i++)
-    {
-        projectedVertices[i][0] = vertices[i][0];
-        projectedVertices[i][1] = vertices[i][1];
-        projectedVertices[i][2] = vertices[i][2];
-    }
-
-    // Draw the tesseract edges
     glBegin(GL_LINES);
     glColor3f(0.5f, 0.5f, 0.5f);
     for (int i = 0; i < 32; i++)
     {
-        glVertex3fv(projectedVertices[edges[i][0]]);
-        glVertex3fv(projectedVertices[edges[i][1]]);
+        glVertex3fv(vertices[edges[i][0]]);
+        glVertex3fv(vertices[edges[i][1]]);
     }
     glEnd();
+}
 
-    // Draw projected vertices with labels
+// Function to draw vertices with labels
+void drawVertices()
+{
     glPointSize(5.0f);
     glColor3f(0.0f, 0.0f, 0.0f);
     for (int i = 0; i < 17; i++)
     {
-        glRasterPos3fv(projectedVertices[i]);
+        glRasterPos3fv(vertices[i]);
         glutBitmapCharacter(GLUT_BITMAP_9_BY_15, '0' + i);
     }
 }
 
+// Function to create illusion lines connecting vertices
+void drawIllusionLines()
+{
+    glColor3f(0.0f, 0.0f, 0.0f);
+    for (int i = 0; i < 17; i++)
+    {
+        for (int j = i + 1; j < 17; j++)
+        {
+            glBegin(GL_LINES);
+            glVertex3fv(vertices[i]);
+            glVertex3fv(vertices[j]);
+            glEnd();
+        }
+    }
+}
+
+// Display callback function
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
+
     gluLookAt(0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-    drawTesseract();
+
+    // Draw the tesseract edges
+    drawEdges();
+
+    // Draw vertices with labels
+    drawVertices();
+
+    // Create illusion lines
+    drawIllusionLines();
+
     glFlush();
 }
 
+// Reshape callback function
 void reshape(int width, int height)
 {
     glViewport(0, 0, (GLsizei)width, (GLsizei)height);
@@ -81,16 +104,19 @@ void reshape(int width, int height)
     glMatrixMode(GL_MODELVIEW);
 }
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(800, 800);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("3D Projection of a Tesseract (4D Hypercube)");
+
     glEnable(GL_DEPTH_TEST);
+
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
+
     glutMainLoop();
     return 0;
 }
